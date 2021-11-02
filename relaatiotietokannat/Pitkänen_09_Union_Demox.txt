@@ -1,0 +1,64 @@
+/* Harjoituksia UNION operaattorin käytöstä */ 
+
+
+/* Un_1: Hae asiakkaan tunnus, nimi, ja yhteyshenkilö.
+Jos yhteyshenkilö puuttuu, korvaa se tekstillä
+"<ei ilmoitettu>". */
+
+ SELECT astunnus, asnimi, IFNULL(yhteyshlo, "ei ilmoitettu") as yhteyshlo
+FROM asiakas
+
+ 
+/* Un_2: Hae asiakkaan nimi, tilausnumero,
+tilauspäivä ja tilaustapa. Jos tilaustapa on V,
+laita tulokseen teksti VERKKO. Jos tilaustapa on L,
+laita LOMAKE. Toteuta UNIONilla. */
+
+SELECT asnimi tilausnro, tilauspvm, IF(tapa = "V", "verkko", "Lomake") AS "tapa"
+FROM asiakas INNER JOIN tilaus
+	ON asiakas.astunnus = tilaus.astunnus
+WHERE tapa = "V"
+UNION
+
+SELECT asnimi tilausnro, tilauspvm, IF(tapa = "L", "Lomake", "Verkko") AS "tapa"
+FROM asiakas INNER JOIN tilaus
+	ON asiakas.astunnus = tilaus.astunnus
+WHERE tapa = "L"
+
+ /* Un_3: Hae kaikki tuotteet (tunnus, nimi,
+tilatut kappaleet yhteensä). Mikäli tuotetta ei ole tilattu
+tilatut kappaleet yhteensä on nolla.
+ */
+
+SELECT tuote.tuotenro, tuotenimi, SUM(kpl)
+FROM tuote LEFT OUTER JOIN tilausrivi
+	ON tuote.tuotenro = tilausrivi.tuotenro
+UNION
+
+ SELECT tuote.tuotenro, tuotenimi, IFNULL(kpl, 0) as kpl
+FROM tuote LEFT OUTER JOIN tilausrivi
+	ON tuote.tuotenro = tilausrivi.tuotenro
+GROUP BY Tuotenimi
+ 
+/* Un_4: Laske asiakkaiden tilausten lukumäärä. Mikäli asiakkaalla ei ole 
+tilauksia on lukumäärä nolla. */
+
+SELECT astunnus, COUNT(tilausnro) AS "Tilausten määrä"
+FROM tilaus
+UNION
+
+SELECT DISTINCT asiakas.astunnus, IFNULL(COUNT(tilausnro), 0) AS "Tilausten määrä"
+FROM tilaus RIGHT OUTER JOIN asiakas
+	ON asiakas.astunnus = tilaus.astunnus
+
+GROUP BY astunnus
+
+ 
+-- LISÄTEHTÄVÄT:
+-- =============
+ 
+/* Un_ 6: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja
+tee niitä vastaavat sql-lauseet. */
+ 
+ 
+/* Un_7: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */ 

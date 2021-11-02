@@ -1,0 +1,98 @@
+/* Nämä tehtävät tehdään UUSIin tauluihin. */
+
+
+
+/* Yp2_1:  Masi Yards'sta soitetaan ja perutaan 20.10.2011 tehty tilaus. 
+Tee tarpeelliset toimenpiteet tietokantaan. */
+
+-- Ensin vaatimattomampi ratkaisu:
+
+select astunnus
+from UUSI_asiakas
+where asnimi = 'MasiYards';
+
+-- saadaan vastaukseksi: masi
+
+begin transaction; -- SQL Server
+start transaction; -- My SQL
+
+select tilausnro
+from UUSI_tilaus
+where astunnus='masi' and tilauspvm='2011.10.20';
+
+-- saadaan vastaukseksi: 209
+
+delete from UUSI_tilausrivi
+where tilausnro=209;
+
+delete from UUSI_tilaus
+where tilausnro=209;
+
+-- rollback -- jos jokin menee pieleen. Tarkista toimiiko tämä My SQL yhmäristössämme
+commit;
+
+-- Tai voit tehdä kaksi alikyselyä: Tämä on napakampi tapa
+
+begin transaction; -- SQL Server
+start transaction; -- My SQL
+
+-- On hyvä testata where-lausetta ensin select-lauseen kanssa:
+
+select tilausnro  -- tämä lause siis vain testaa alikyselyä
+from UUSI_tilaus
+where astunnus=(select astunnus
+		from UUSI_asiakas
+		where asnimi = 'MasiYards') 
+		and tilauspvm='2011.10.20';
+
+-- ja nyt poistetaan, kun todettiin, että alikysely toimi oikein
+delete from UUSI_tilausrivi
+where tilausnro=
+	(select tilausnro
+	from UUSI_tilaus
+	where astunnus=(select astunnus
+		from UUSI_asiakas
+		where asnimi = 'MasiYards')
+		and tilauspvm='2011.10.20');
+
+
+delete from UUSI_tilaus
+	where astunnus=(select astunnus
+		from UUSI_asiakas
+		where asnimi = 'MasiYards') 
+		and tilauspvm='2011.10.20';
+
+-- rollback;  -- jos jokin menee pieleen
+commit;
+
+/* Yp2_2: Lisää tuote-tauluun sarake Muutospaiva. */
+
+
+alter table UUSI_tuote
+add muutospvm datetime;
+
+
+/* Yp2_3: Vie kaikkiin tuotetietoihin muutospäiväksi jokin edellisen kuukauden päivä.*/
+
+update UUSI_tuote
+set muutospvm = '2016.01.21';
+
+
+
+/* Yp2_4: Nosta tuoteryhmään 15 kuuluvien tuotteiden hintoja 5%:lla.*/
+
+update UUSI_tuote
+set hinta = 1.05*hinta
+where trnro = 15;
+	
+
+
+
+-- LISÄTEHTÄVÄT:
+-- =============
+
+/* Yp2_ 8: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Yp2_9: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */

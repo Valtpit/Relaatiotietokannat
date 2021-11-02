@@ -1,0 +1,77 @@
+
+/* Tässä tehtäväsarjassa viedään tietosisältöä vanhoista tauluista uusiin 
+   tauluihin. YLLÄPITOLAUSEET ajetaan siis uusiin tauluihin */
+
+-- MUISTA MIETTIÄ LOOGINEN RATKAISU ENNE SQL_LAUSEEN KIRJOITTAMISTA!!!!!
+
+/* Yp_1: DOKUMENTOI seuraavissa tehtävissä tehtävä tietojen siirto. 
+	Missä järjestyksessä veit tiedot? Saitko mahdollisia 
+	virheilmoituksia? kopioi ne. Mitä virheilmoitus merkitsi? 
+	Miten pääsit siitä eteenpäin?*/
+
+
+/* Yp_2: Vie UUSI_ASIAKAS, UUSI_TILAUS, UUSI_TILAUSRIVI, UUSI_TUOTE, UUSI_TUOTERYHMA ja POSTI-tauluihisi 
+      	tiedot vanhoista tauluista. Tee siis useampi sql-lause. 
+
+	HUOM! Jos olet määritellyt tauluihin viiteavainmääritykset, 
+	tietot pitää viedä tauluihin niin, että lapsitauluun tietoja vietäessä
+	isätaulussa on jo se rivi, mihin lapsitaulusta viitataan.
+
+	Huomaa, että omissa tauluissasi on myös sarakkeita, joita ei ole yhteisissä tauluissa.
+	Vie niihin sopivat tiedot vanhoista tauluista. */
+
+
+
+/* Yp_3: Lisää Posti-tauluun rivit 15500, Lahti ja 00200, Helsinki. */
+
+
+
+/* Yp_4: Lisää omaan Asiakas-tauluusi uusi asiakas AROLA Arola Oy, 
+jonka postinumero on 15500 ja asiakkaaksitulovuosi on kuluva vuosi. 
+Tarkista menikö rivi tauluun.*/
+
+
+/* Yp_5: Lisää edellisessä tehtävässä tallentamallesi uudelle asiakkaalle 
+yhteyshenkilö. Hänen nimensä on Kortes. */
+
+
+
+/* Yp_6: Poista tilauksen 209 kolmas rivi. */
+
+
+
+/* Yp_7: Lisää uusi tuote Hikinauha, laita tuotenumeroksi 8.  
+- Taulumäärityksistäsi riippuu pitääkö sinun määritellä myös mihin 
+tuoteryhmään tuote kuuluu. */
+
+
+
+/* YP_8: Lisää edellä lisäämällesi tuotteelle hinnaksi 10 € ja 
+kustannuksiksi 4 €. */
+
+
+/* Yp_9: Lisää uusi tuoteryhmä: 15, Kalastus */
+
+
+/* Yp_10: Lisää edellä lisättyyn tuoteryhmään kuuluvat tuotteet:  
+	Siikaperho, hinta 9€ ja  Ahvenpilkki, hinta 12 €. */
+
+
+/* Yp_11: Arola tilaa 100 kpl Ahvenpilkkeja ja 150 kpl Siikaperhoja. 
+	Päivitä tietokantaasi tiedot tästä tilauksesta. */
+
+
+/* Yp_12: Korota kaikkien tuoteryhmän 12 tuotteiden hintoja 5%. */
+
+
+
+
+-- LISÄTEHTÄVÄT:
+-- =============
+
+/* Yp_ 13: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Yp_14: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */
+

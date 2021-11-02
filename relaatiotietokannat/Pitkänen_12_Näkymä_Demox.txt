@@ -1,0 +1,83 @@
+
+
+/* Harjoituksia n‰kymist‰ */
+
+
+/* Nk_1: Tee n‰kym‰ as_tilaukset, jossa n‰kyy 
+asiakkaan nimi, asiakkaan tilaaman tuotteen nimi 
+sek‰ asiakkaan tilaamien tuotteiden kappalem‰‰r‰.  */
+
+CREATE VIEW as_tilaukset AS
+	SELECT asnimi, tuotenimi, SUM(kpl) AS "tilattu yhteens‰"
+	FROM asiakas, tilaus, tuote, tilausrivi
+	WHERE asiakas.astunnus = tilaus.astunnus
+		AND tilaus.tilausnro = tilausrivi.tilausnro
+    	AND tilausrivi.tuotenro = tuote.tuotenro
+	GROUP BY asnimi, tuotenimi
+
+
+/* Nk_2:  Hae edellisess‰ teht‰v‰ss‰ tekem‰ll‰si n‰kym‰ll‰ 
+	MasiYards'n tilaamat tuotteet */
+
+SELECT *
+FROM as_tilaukset
+WHERE asnimi = "MasiYards"
+
+/* Nk_3: Tee n‰kym‰ tuotot2011, jossa n‰kyy tuotten 
+nimi, tilattujen tuoteiden tulot ja kustannukset sek‰ 
+kunkin tuotteen tuotto (tulot - kustannukset). 
+Ota mukaan vain vuoden 2011 tilaukset.*/
+
+CREATE VIEW tuotot2011 AS
+SELECT tuotenimi, (kpl * hinta) AS "tilattujen hinta",
+(kpl * kustannus) AS "Tilattujen kustannus",
+((kpl * hinta) - (kpl * kustannus)) AS "Tilattujen tuotto"
+FROM tuote, tilausrivi, tilaus
+WHERE tuote.tuotenro = tilausrivi.tuotenro
+	AND tilausrivi.tilausnro = tilaus.tilausnro
+    AND tilauspvm BETWEEN '2011-01-01' AND '2011-12-31'
+GROUP BY tuotenimi
+
+/* Nk_4: Hae edellisen n‰kym‰n avulla tuoteet, joiden tulot ovat
+alle 5000Ä */
+
+SELECT * 
+FROM tuotot2011
+WHERE "tilattujen tuotto" < 5000
+
+/* Nk_5: Tee n‰kym‰ tilaus_posteittain, josta n‰et 
+postitoimipaikoittain tilausten m‰‰r‰t rahassa. 
+Miten saat esitetty‰ tiedot aakkosj‰rjestyksess‰?*/
+
+CREATE VIEW tilaus_posteittain AS
+
+
+
+/* Nk_6: Poista teht‰v‰ss‰ 5 tekem‰si n‰kym‰. */
+
+DROP VIEW tilaus_posteittain
+
+
+
+/* Nk_7: Tee n‰kym‰ toimittamattomat, josta n‰kyy 
+toimittamattomien tilausten tiedot. N‰yt‰ asiakkaan nimi, 
+tilausnumero, tuotteen nimi ja nro, tilattu m‰‰r‰. 
+HUOM: Tutustu tilausprosessiin (Demox-kannan kuvaus), t‰ss‰ on
+tiedett‰v‰, miten prosessi etenee.*/
+
+
+
+
+/* Nk_8: Tee n‰kym‰, joka ker‰‰ tuotot tuoteryhmitt‰in. Hae tuoteryhmien
+tiedot n‰kym‰n avulla.  */
+
+
+
+--  LISƒTEHTƒVƒT:
+-- =============
+
+/* Nk_ 8: Keksi aiheeseen liittyen 2 todellisen tuntuista teht‰v‰‰ ja 
+tee niit‰ vastaavat sql-lauseet. */
+
+
+/* Nk_9: Etsi netist‰ asiaan liittyv‰ hyv‰ ohje tai esimerkki. Laita linkki sinne. */

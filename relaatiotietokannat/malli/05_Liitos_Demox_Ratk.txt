@@ -1,0 +1,195 @@
+/* Harjoituksia kahden tai useamman taulun liitokseen */
+
+
+/* Li_1: Hae Asusteet-tuoteryhmään kuuluvien tuotteiden 
+nimet ja hinnat. */
+
+SELECT 	tuotenimi, hinta, trnimi
+	FROM tuote, tuoteryhma
+	WHERE tuote.trnro=tuoteryhma.trnro AND 
+		trnimi='asusteet';
+		
+SELECT 	tuotenimi, hinta, trnimi
+	FROM tuote INNER JOIN tuoteryhma 
+	ON tuote.trnro=tuoteryhma.trnro
+	WHERE trnimi='asusteet';		
+
+
+/* Li_2: Hae tuotteiden nimet, tilausnumerot, joissa 
+tuotetta on tilattu sekä tuotteiden kappalemäärä tilauksessa. 
+Lajittele tuotteittain.  */ 
+
+SELECT 	tuotenimi, tilausnro, kpl
+	FROM tuote, tilausrivi 
+	WHERE tuote.tuotenro=tilausrivi.tuotenro  
+	ORDER BY tuotenimi;
+
+SELECT 	tuotenimi, tilausnro, kpl
+	FROM tuote INNER JOIN tilausrivi 
+	ON tuote.tuotenro=tilausrivi.tuotenro  
+	ORDER BY tuotenimi;
+	
+/* Li_3: Kuka asiakas on tilannut tuotetta Silkkihuivi? 
+Näytä asiakkaan nimi, tilausnumero ja tilattu määrä. */
+
+SELECT 	asnimi, tilaus.tilausnro, kpl
+FROM asiakas, tilaus, tilausrivi, tuote
+WHERE tuote.tuotenimi='Silkkihuivi' AND 
+	asiakas.astunnus=tilaus.astunnus AND 
+	tilaus.tilausnro=tilausrivi.tilausnro AND 
+	tilausrivi.tuotenro=tuote.tuotenro;
+
+SELECT 	asnimi, tilaus.tilausnro, kpl
+FROM asiakas INNER JOIN tilaus
+ON asiakas.astunnus=tilaus.astunnus
+INNER JOIN tilausrivi
+ON tilaus.tilausnro=tilausrivi.tilausnro
+INNER JOIN tuote
+ON tilausrivi.tuotenro=tuote.tuotenro
+WHERE tuote.tuotenimi='Silkkihuivi';
+
+/* Li_4: Ketkä asiakkaat ovat tilanneet tuoteryhmän 
+'Talous' tuotteita? */
+
+SELECT distinct	 asnimi
+	FROM asiakas,tilaus,tilausrivi,tuote,tuoteryhma
+	WHERE trnimi='Talous' AND 
+		asiakas.astunnus=tilaus.astunnus AND 
+		tilaus.tilausnro=tilausrivi.tilausnro AND 
+		tilausrivi.tuotenro=tuote.tuotenro AND
+        tuote.trnro=tuoteryhma.trnro;
+
+SELECT 	distinct asnimi
+FROM asiakas INNER JOIN tilaus
+ON asiakas.astunnus=tilaus.astunnus
+INNER JOIN tilausrivi
+ON tilaus.tilausnro=tilausrivi.tilausnro
+INNER JOIN tuote
+ON tilausrivi.tuotenro=tuote.tuotenro
+INNER JOIN tuoteryhma
+ON tuote.trnro=tuoteryhma.trnro
+WHERE trnimi='Talous';
+
+/* Li_5: Listaa niiden asiakkaiden nimet, joilla on sama
+postitoimipaikka kuin asiakkaalla, jonka tunnus on NUUKIA. */ 
+
+SELECT 	a1.asnimi
+	FROM asiakas a1, asiakas a2
+	WHERE a1.postinro=a2.postinro AND 
+	a2.astunnus='NUUKIA' AND 
+	a1.astunnus !='NUUKIA';
+	
+SELECT 	a1.asnimi
+	FROM asiakas a1 INNER JOIN asiakas a2
+	ON a1.postinro=a2.postinro
+	WHERE a2.astunnus='NUUKIA' AND 
+		a1.astunnus !='NUUKIA';
+
+
+/* Li_6: Hae asiakkaan nimi, tilausnro sekä 
+tilauksen loppusumma. Lajittele asiakkaan nimen 
+mukaan nousevaan järjestykseen. */ 
+
+SELECT 	asnimi, tilaus.tilausnro, SUM(kpl*hinta)
+	FROM asiakas, tilaus, tilausrivi, tuote
+	WHERE asiakas.astunnus=tilaus.astunnus AND 
+      		tilaus.tilausnro=tilausrivi.tilausnro AND 
+		tilausrivi.tuotenro=tuote.tuotenro
+	GROUP BY asnimi, tilaus.tilausnro
+	ORDER BY asnimi;
+
+SELECT 	asnimi, tilaus.tilausnro, SUM(kpl*hinta)
+	FROM asiakas INNER JOIN tilaus
+	ON asiakas.astunnus=tilaus.astunnus
+	INNER JOIN tilausrivi
+	ON tilaus.tilausnro=tilausrivi.tilausnro
+	INNER JOIN tuote
+	ON tilausrivi.tuotenro=tuote.tuotenro
+	GROUP BY asnimi, tilaus.tilausnro
+	ORDER BY asnimi;
+
+/* Li_7: Hae tuotteittain tuotteen tunnus, nimi ja 
+tilatut kappalemäärät yhteensä. */
+
+SELECT 	tuote.tuotenro, tuotenimi, SUM(kpl)
+	FROM tuote, tilausrivi
+	WHERE tuote.tuotenro = tilausrivi.tuotenro
+	GROUP BY tuote.tuotenro, tuotenimi;
+
+SELECT 	tuote.tuotenro, tuotenimi, SUM(kpl)
+	FROM tuote INNER JOIN tilausrivi
+	ON tuote.tuotenro = tilausrivi.tuotenro
+	GROUP BY tuote.tuotenro, tuotenimi;
+
+/* Li_8: Hae niiden tuotteiden nimet, joita on 
+tilattu yhteensä alle 100 kappaletta.  */
+
+SELECT 	tuotenimi
+	FROM tuote, tilausrivi
+	WHERE tuote.tuotenro=tilausrivi.tuotenro
+	GROUP BY tuotenimi
+	HAVING SUM(kpl) < 100;
+
+SELECT 	tuotenimi
+	FROM tuote INNER JOIN tilausrivi
+	ON tuote.tuotenro=tilausrivi.tuotenro
+	GROUP BY tuotenimi
+	HAVING SUM(kpl) < 100;
+
+/* Li_9: Hae asiakkaittain tilattujen tuotteiden 
+kappalemäärät. Näytä asiakkaan nimi, tuotteen nimi 
+ja kappalemäärien summa. Lajittele asiakkaan ja 
+tuotteen nimen mukaan nousevaan järjestykseen. */
+
+SELECT	asnimi,tuotenimi,SUM(kpl)
+	FROM asiakas, tilaus,tilausrivi, tuote
+	WHERE asiakas.astunnus=tilaus.astunnus AND 
+      		tilaus.tilausnro=tilausrivi.tilausnro AND 
+		tilausrivi.tuotenro=tuote.tuotenro
+	GROUP BY asnimi, tuotenimi;
+
+SELECT	asnimi,tuotenimi,SUM(kpl)
+	FROM asiakas INNER JOIN tilaus
+	ON asiakas.astunnus=tilaus.astunnus
+	INNER JOIN tilausrivi
+	ON tilaus.tilausnro=tilausrivi.tilausnro
+	INNER JOIN tuote
+	ON tilausrivi.tuotenro=tuote.tuotenro
+	GROUP BY asnimi, tuotenimi;
+
+/* Li_10: Listaa niiden tuotteiden nimi ja hinta,
+joiden hinta on suurempi tai yhtä suuri kuin tuotteen 4. */ 
+
+SELECT 	t1.tuotenimi, t1.hinta
+	FROM tuote t1, tuote t2
+	WHERE t1.hinta>t2.hinta AND 
+	t2.tuotenro = 4;
+
+SELECT 	t1.tuotenimi, t1.hinta
+	FROM tuote t1 INNER JOIN tuote t2
+	ON t1.hinta>t2.hinta  
+	WHERE t2.tuotenro = 4;
+
+/* Li_11: Tuotteen tuotto on hinta vähennettynä 
+kustannuksilla ja edelleen kerrottuna tuotteen 
+tilausmäärällä. Paljonko on kukin tuoteen tuottama tuotto? 
+Näytä tuotteen nimi ja tuotto. */
+
+SELECT 	tuotenimi, SUM(kpl*(hinta-kustannus)) as tuotto
+	FROM tuote, tilausrivi
+	WHERE tuote.tuotenro=tilausrivi.tuotenro
+	GROUP BY tuotenimi;
+
+SELECT 	tuotenimi, SUM(kpl*(hinta-kustannus)) as tuotto
+	FROM tuote INNER JOIN tilausrivi
+	ON tuote.tuotenro=tilausrivi.tuotenro
+	GROUP BY tuotenimi;
+
+-- LISÄTEHTÄVÄT:
+-- =============
+
+/* Li_ 12: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Li_13: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */

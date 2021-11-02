@@ -1,0 +1,100 @@
+/* Harjoituksia kahden tai useamman taulun liitokseen */
+
+
+/* Li_1: Hae Asusteet-tuoteryhm‰‰n kuuluvien tuotteiden 
+nimet ja hinnat. */
+
+SELECT tuotenimi, hinta
+FROM uusi_tuote, uusi_tuoteryhma
+WHERE uusi_tuote.trnro = "11" AND uusi_tuote.trnro = uusi_tuoteryhma.trnro
+
+/* Li_2: Hae tuotteiden nimet, tilausnumerot, joissa 
+tuotetta on tilattu sek‰ tuotteiden kappalem‰‰r‰ tilauksessa. 
+Lajittele tuotteittain.  */ 
+
+SELECT tuotenimi, tilausnro, kpl
+FROM uusi_tuote, uusi_tilausrivi
+WHERE uusi_tuote.tuotenro = uusi_tilausrivi.tuotenro
+GROUP BY tuotenimi
+	
+/* Li_3: Kuka asiakas on tilannut tuotetta Silkkihuivi? 
+N‰yt‰ asiakkaan nimi, tilausnumero ja tilattu m‰‰r‰. */
+
+SELECT asnimi, uusi_tilaus.tilausnro, kpl
+FROM uusi_asiakas, uusi_tilaus, uusi_tilausrivi
+WHERE tuotenro = "4" AND uusi_tilaus.tilausnro = uusi_tilausrivi.tilausnro
+AND uusi_tilaus.astunnus = uusi_asiakas.astunnus
+
+/* Li_4: Ketk‰ asiakkaat ovat tilanneet tuoteryhm‰n 
+'Talous' tuotteita? */
+
+SELECT DISTINCT asnimi
+FROM uusi_tuoteryhma, uusi_tuote, uusi_tilaus, uusi_tilausrivi, uusi_asiakas
+WHERE uusi_tuoteryhma.trnro = "13"
+AND uusi_tuoteryhma.trnro = uusi_tuote.trnro
+AND uusi_tilaus.tilausnro = uusi_tilausrivi.tilausnro
+AND uusi_tilaus.astunnus = uusi_asiakas.astunnus
+AND uusi_tilausrivi.tuotenro = uusi_tuote.tuotenro
+
+/* Li_5: Listaa niiden asiakkaiden nimet, joilla on sama
+postitoimipaikka kuin asiakkaalla, jonka tunnus on NUUKIA. */ 
+
+SELECT DISTINCT asnimi
+FROM posti, uusi_asiakas
+WHERE postitmp = "oulu" 
+AND posti.postinro = uusi_asiakas.postinro
+
+
+/* Li_6: Hae asiakkaan nimi, tilausnro sek‰ 
+tilauksen loppusumma. Lajittele asiakkaan nimen 
+mukaan nousevaan j‰rjestykseen. */ 
+
+SELECT DISTINCT asnimi, uusi_tilaus.tilausnro, (hinta*kpl) AS "Yhteishinta"
+FROM uusi_asiakas, uusi_tilaus, uusi_tilausrivi, uusi_tuote
+WHERE uusi_asiakas.astunnus = uusi_tilaus.astunnus
+AND uusi_tilaus.tilausnro = uusi_tilausrivi.tilausnro
+AND uusi_tilausrivi.tuotenro = uusi_tuote.tuotenro
+ORDER BY asnimi ASC
+
+/* Li_7: Hae tuotteittain tuotteen tunnus, nimi ja 
+tilatut kappalem‰‰r‰t yhteens‰. */
+
+SELECT uusi_tuote.tuotenro, tuotenimi, SUM()
+FROM uusi_tuote, uusi_tilausrivi
+WHERE uusi_tuote.tuotenro = uusi_tilausrivi.tuotenro
+ORDER BY tuotenro
+
+/* Li_8: Hae niiden tuotteiden nimet, joita on 
+tilattu yhteens‰ alle 100 kappaletta.  */
+
+SELECT DISTINCT tuotenimi
+FROM uusi_tuote, uusi_tilausrivi
+WHERE kpl < 100 AND uusi_tuote.tuotenro = uusi_tilausrivi.tuotenro
+
+/* Li_9: Hae asiakkaittain tilattujen tuotteiden 
+kappalem‰‰r‰t. N‰yt‰ asiakkaan nimi, tuotteen nimi 
+ja kappalem‰‰rien summa. Lajittele asiakkaan ja 
+tuotteen nimen mukaan nousevaan j‰rjestykseen. */
+
+
+
+/* Li_10: Listaa niiden tuotteiden nimi ja hinta,
+joiden hinta on suurempi tai yht‰ suuri kuin tuotteen 4. */ 
+
+
+
+/* Li_11: Tuotteen tuotto on hinta v‰hennettyn‰ 
+kustannuksilla ja edelleen kerrottuna tuotteen 
+tilausm‰‰r‰ll‰. Paljonko on kukin tuoteen tuottama tuotto? 
+N‰yt‰ tuotteen nimi ja tuotto. */
+
+
+
+-- LISƒTEHTƒVƒT:
+-- =============
+
+/* Li_ 12: Keksi aiheeseen liittyen 2 todellisen tuntuista teht‰v‰‰ ja 
+tee niit‰ vastaavat sql-lauseet. */
+
+
+/* Li_13: Etsi netist‰ asiaan liittyv‰ hyv‰ ohje tai esimerkki. Laita linkki sinne. */

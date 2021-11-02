@@ -1,0 +1,131 @@
+/* HUOM!! T‰ss‰ teht‰v‰ss‰ tehd‰‰n uusia tauluja samaan kantaan, jossa select-teht‰vien
+	taulutkin ovat. Niist‰ k‰ytet‰‰n nimityst‰ vanhat taulut ja t‰ss‰ luotavista nimityst‰
+	uudet taulut.
+
+	Uusien taulujen nimet alkavat UUSI-sanalla.
+*/
+
+
+-- TEHTƒVƒT:
+
+/* Ta_1. Taulujen luontilauseet ovat tiedoston lopussa.  */
+
+
+/* Ta_2. Aja luontilauseet omaan kantaasi, saat siis uusia tauluja. */
+
+
+/* Ta_3. Mit‰ elementtej‰ kantaan luotiin t‰ss‰ tiedostossa.*/
+
+	
+/* Ta_4. Miten sinun 'uudet taulut' eroaa vanhoista tauluista.
+Tarkastele eroja taulujen, perusavainten, vitteavainten, tietosis‰llˆn ja sallittujen arvojen osalta. */
+
+
+ 
+/* Ta_5: Lis‰‰ UUSI_tilaus tauluun tarkastus (CHECK), joka m‰‰rittelee tapa-sarakkeen
+          sallituiksi arvoiksi L ja V.  
+	MySQL-tietokanta hyv‰ksyy m‰‰rityksen, mutta sill‰ ei ole mit‰‰n merkityst‰. */
+
+
+-- Ta_6: 
+/*	Lis‰‰ UUSI_tilaus tauluun tarkastus (CHECK), joka m‰‰rittelee tila-sarakkeen
+          sallituiksi arvoiksi M,L,T ja NULL.  
+	MySQL-tietokanta hyv‰ksyy m‰‰rityksen, mutta sill‰ ei ole mit‰‰n merkityst‰. */
+
+
+--Ta_7:
+/* Luo taulu UUSI_myynnit, jossa on sarakkeet ID, tuotenro, tuotenimi, vuosi, maara ja tuotto. 
+Tuotenro ja tuotenimi ovat tietotyypilt‰‰n samanlaisia kuin Demox-esimerkiss‰mme. 
+(Vuosi on pieni kokonaisluku, johon tulee vuosiluku. Maara on kokonaisluku-tyyppinen sarake ja 
+ilmoittaa paljonko ko. tuotetta on myyty yhteens‰. Tuotto on desimaaliluku, joka ilmoittaa ko. tuotteesta 
+saadun tuoton kpl*(hinta-kustannus)). M‰‰rittele tuotenro+vuosi yhdistelm‰ unique-typpiseksi. ID on perusavain, 
+johon tulee juokseva numero.*/
+
+CREATE TABLE UUSI_myynnit	
+	(ID SMALLINT AUTO_INCREMENT NOT NULL,
+	 tuotenro INTEGER NOT NULL,    	 
+	 tuotenimi CHAR (20), 
+	 vuosi SMALLINT,	 
+	 maara INTEGER,
+	 tuotto DECIMAL(8,2), 	 
+	 PRIMARY KEY (ID));
+
+CREATE UNIQUE INDEX UUSI_myynnit_tu_vu
+ON UUSI_myynnit(tuotenro,vuosi);
+
+
+-- LISƒTEHTƒVƒT:
+-- =============
+
+/* Ta_8: Keksi aiheeseen liittyen 2 todellisen tuntuista teht‰v‰‰ ja 
+tee niit‰ vastaavat sql-lauseet. */
+
+
+/* Ta_9: Etsi netist‰ asiaan liittyv‰ hyv‰ ohje tai esimerkki. Laita linkki sinne. */
+
+
+-- TAULUJEN LUONTILAUSEET
+
+/* jos luontilause ei mene l‰pi, kokeile ajaa engine=InnoDB -m‰‰rityksen kanssa eli 
+poista merkkijono: ; -- luontilauseiden lopusta. */
+
+/*	Perustetaan posti-taulu, jossa on sarakkeet postinro ja postitmp.
+    Postinro on avainsarake. */
+
+CREATE TABLE posti
+ (postinro CHAR (5) PRIMARY KEY,
+  postitmp CHAR (15)); -- engine=InnoDB;
+ 
+/*	Perustetaan UUDET asiakas-, tilaus-, tilausrivi-, tuote- ja tuoteryhma-taulut. 
+	 Taulut (paitsi Asiakas) ovat samanlaisia DEMOX-esimerkin kanssa. 
+	 Koska uusissa tauluissa on posti-taulu, on asiakastalusta voitu 
+	 j‰tt‰‰ postitmp-sarakke pois. */
+
+ 
+ CREATE TABLE UUSI_asiakas (
+ astunnus CHAR(6) PRIMARY KEY,
+ asnimi CHAR(20) NOT NULL,
+ yhteyshlo CHAR(15),
+ postinro CHAR(5),
+ asvuosi SMALLINT,
+ FOREIGN KEY (postinro) -- viiteavain viittaa posti-tauluun
+ REFERENCES posti (postinro)); -- engine=InnoDB;
+
+
+ 
+ CREATE TABLE UUSI_tuoteryhma (
+ trnro SMALLINT PRIMARY KEY,
+ trnimi CHAR(10)); -- engine=InnoDB;
+ 
+ CREATE TABLE UUSI_tuote (
+ tuotenro INTEGER PRIMARY KEY,
+ tuotenimi CHAR(20) NOT NULL,
+ hinta DECIMAL(5,2),
+ kustannus DECIMAL(5,2),
+ trnro SMALLINT NOT NULL,
+ FOREIGN KEY (trnro)  -- viiteavain viittaa UUSI_tuoteryhma-tauluun
+ REFERENCES UUSI_tuoteryhma (trnro)); -- engine=InnoDB;
+ 
+ CREATE TABLE UUSI_tilaus (
+ tilausnro INTEGER PRIMARY KEY,
+ astunnus CHAR(6) NOT NULL,
+ tilauspvm DATETIME NOT NULL,
+ tapa CHAR(1) NOT NULL,
+ tila CHAR(1),
+ tallennuspvm DATETIME,
+ FOREIGN KEY (astunnus)  -- viiteavain viittaa UUSI_asiakas-tauluun
+ REFERENCES UUSI_asiakas (astunnus)); -- engine=InnoDB;
+ 
+ CREATE TABLE UUSI_tilausrivi (
+ tilausnro INTEGER,
+ rivinro SMALLINT,
+ tuotenro INTEGER NOT NULL,
+ kpl INTEGER NOT NULL,
+ PRIMARY KEY (tilausnro, rivinro),
+ FOREIGN KEY (tilausnro)
+ REFERENCES UUSI_tilaus (tilausnro),
+ FOREIGN KEY (tuotenro)  -- viiteavain viittaa UUSI_tilaus-tauluun
+ REFERENCES UUSI_tuote (tuotenro)); -- engine=InnoDB; 
+ 
+/* HUOM!!  Viiteavainten m‰‰ritykset  */
+

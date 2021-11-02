@@ -1,0 +1,196 @@
+
+/* Harjoituksia alikyselyistä */
+
+
+
+-- YKSINKERTAISIA ALIKYSELYITÄ: 
+
+/* Ak_1: Hae ne tuotteet nimellä, joilla on sama hinta
+kuin tuotteella 7. Käytä alikyselyä */
+
+SELECT tuotenimi
+FROM tuote 
+WHERE hinta =
+       (SELECT hinta
+	FROM tuote
+	WHERE tuotenro = 7);
+
+
+
+/* Ak_2: Hae tilauksen 101 tuotteiden nimet. */
+
+SELECT tuotenimi 
+FROM tuote 
+WHERE tuotenro IN 
+	(SELECT tuotenro 
+	FROM tilausrivi 
+	WHERE tilausnro = 101);
+
+
+/* Ak_3: Ketkä asiakkaat ovat tilanneet 
+tuoteryhmän 13 tuotteita? */
+
+SELECT asnimi
+FROM asiakas
+WHERE astunnus IN
+       (SELECT astunnus
+	FROM tilaus
+	WHERE tilausnro IN
+	       (SELECT tilausnro
+		FROM tilausrivi
+		WHERE tuotenro IN
+		       (SELECT tuotenro
+			FROM tuote
+			WHERE trnro = 13)));
+
+/* tee sama asia liitosta käyttäen */
+
+SELECT distinct asnimi
+FROM asiakas, tilaus, tilausrivi, tuote
+WHERE trnro = 13 and
+      tuote.tuotenro =tilausrivi.tuotenro and
+      tilausrivi.tilausnro =tilaus.tilausnro and
+      tilaus.astunnus = asiakas.astunnus;
+
+
+/* Ak_4: Anna niiden tuoteryhmien nimet, joiden tuotteista
+ainakin yhtä tilattu yksittäisellä tilausrivillä yli 100 kpl. */
+
+SELECT trnimi
+FROM tuoteryhma
+WHERE trnro IN
+       (SELECT trnro
+	FROM tuote
+	WHERE tuotenro IN
+	       (SELECT tuotenro
+		FROM tilausrivi
+		WHERE kpl > 100));
+
+/* tee sama asia liitosta käyttäen */
+
+SELECT distinct trnimi
+FROM tuoteryhma, tuote, tilausrivi
+WHERE kpl > 100 and
+      tilausrivi.tuotenro=tuote.tuotenro and
+      tuote.trnro=tuoteryhma.trnro; 
+	
+
+/* Ak_5: Mitkä tuotteet ovat halvempia kuin kaikki
+tuoteryhmän 12 tuotteet */
+
+SELECT tuotenimi
+FROM tuote
+WHERE hinta <
+       (SELECT MIN(hinta)
+	FROM tuote
+	WHERE trnro = 12);
+
+SELECT tuotenimi
+FROM tuote
+WHERE hinta < ALL
+       (SELECT hinta
+	FROM tuote
+	WHERE trnro = 12); 
+
+
+
+/* Ak_6: Hae kustakin TUOTE-taulun tuotteesta tunnus, nimi, tilausten 
+kappalemäärä ja tuotot yhteensä. Tuotto yhteensä saadaan 
+kertomalla hinnan ja kustannusten erotus tilattulla 
+kappalemäärällä. HUOM! Tätä tehtävää ei voi tehdä alikyselynä vaan 
+liitoksena.  Mieti miksi ei. */
+
+-- molemmista tauluista näytetään tietoja
+SELECT tu.tuotenro, tuotenimi, SUM(kpl), 
+		SUM(kpl*(hinta-kustannus))
+	FROM tuote tu, tilausrivi tr
+	WHERE tu.tuotenro=tr.tuotenro
+	GROUP BY tu.tuotenro, tuotenimi;
+
+
+-- KYTKETTYJÄ ALIKYSELYITÄ: 
+
+/* Ak_7: Hae tuotteet, joiden hinta on korkeampi 
+tai yhtä suuri kuin tuoteryhmänsä keskiarvo. */
+
+SELECT tuotenimi
+FROM tuote t1
+WHERE hinta >=
+       (SELECT AVG(hinta)
+	FROM tuote t2
+	WHERE t2.trnro=t1.trnro);
+
+
+/* Ak_8: Hae tuotteet, joiden kustannukset ovat 
+tuoteryhmänsä pienimmät. */
+
+SELECT tuotenimi
+FROM tuote t1
+WHERE kustannus =
+       (SELECT MIN(kustannus)
+	FROM tuote t2
+	WHERE t2.trnro=t1.trnro); 
+
+/* Ak_9: Hae postitoimipaikoittain asiakkuusiältään 
+vanhimmat asiakkaat. */
+
+SELECT postitmp, asnimi
+FROM asiakas a1
+WHERE asvuosi =
+       (SELECT MIN(asvuosi)
+	FROM asiakas a2
+	WHERE a2.postitmp=a1.postitmp);
+
+
+/* Ak_10: Hae tilauksen 209 tuotteiden nimet käyttäen
+EXISTS-alikyselyä. */ 
+
+SELECT tuotenimi
+FROM tuote t
+WHERE EXISTS
+       (SELECT *
+	FROM tilausrivi tr
+	WHERE tilausnro = 209 AND 
+	      tr.tuotenro = t.tuotenro);
+
+
+/* Ak_11: Mitkä asiakkaat ovat tulleet asiakkaiksi 
+eri vuonna kuin kaikki turkulaiset ja tamperelaiset, 
+käytä NOT EXISTS-alikyselyä. */ 
+
+SELECT asnimi
+FROM asiakas a
+WHERE NOT EXISTS
+       (SELECT asvuosi
+	FROM asiakas b
+	WHERE a.asvuosi=b.asvuosi AND 
+	     (b.postitmp = 'Turku' OR b.postitmp = 'Tampere'));
+
+
+/* Ak_12: Hae asiakkaat, jotka ovat tehneet 
+alle 600 Euron hintaisia tilauksia. HUOM! Tässä tarvitset 
+alikyselyn lisäksi myös liitosta. Tai voi tehdä kokonaan
+ liitoksena. */
+
+SELECT asnimi
+FROM asiakas
+WHERE astunnus IN
+       (SELECT astunnus
+	FROM tilaus
+	WHERE tilausnro IN
+	       (SELECT tilausnro
+		FROM tilausrivi, tuote
+		WHERE tilausrivi.tuotenro=tuote.tuotenro
+		GROUP BY tilausnro
+		HAVING SUM(kpl*hinta) < 600));
+
+
+
+-- LISÄTEHTÄVÄT:
+-- =============
+
+/* Ak_ 13: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Ak_14: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */	

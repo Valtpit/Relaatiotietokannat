@@ -1,0 +1,39 @@
+/* Nämä tehtävät tehdään UUSIin tauluihin. */
+
+
+
+/* Yp2_1:  Masi Yards'sta soitetaan ja perutaan 20.10.2011 tehty tilaus. 
+Tee tarpeelliset toimenpiteet tietokantaan. */
+
+DELETE FROM uusi_tilausrivi
+WHERE tilausnro = 209
+
+DELETE FROM uusi_tilaus
+WHERE tilausnro = 209
+
+/* Yp2_2: Lisää tuote-tauluun sarake Muutospaiva. */
+
+ALTER TABLE uusi_tuote
+ADD COLUMN Muutospaiva date
+
+/* Yp2_3: Vie kaikkiin tuotetietoihin muutospäiväksi jokin edellisen kuukauden päivä.*/
+
+UPDATE uusi_tuote
+SET Muutospaiva = "2021-9-25 00:00:00"
+
+/* Yp2_4: Nosta tuoteryhmään 15 kuuluvien tuotteiden hintoja 5%:lla.*/
+
+UPDATE uusi_tuote
+SET hinta = hinta * 1.05
+WHERE trnro = 15
+
+
+
+-- LISÄTEHTÄVÄT:
+-- =============
+
+/* Yp2_ 8: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Yp2_9: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */

@@ -1,0 +1,118 @@
+
+
+/* Harjoituksia n‰kymist‰ */
+
+
+/* Nk_1: Tee n‰kym‰ as_tilaukset, jossa n‰kyy 
+asiakkaan nimi, asiakkaan tilaaman tuotteen nimi 
+sek‰ asiakkaan tilaamien tuotteiden kappalem‰‰r‰.  */
+
+CREATE 	VIEW AS_TILAUKSET AS
+	SELECT asnimi, tuotenimi, kpl
+	FROM asiakas, tilaus, tilausrivi, tuote
+	WHERE asiakas.astunnus = tilaus.astunnus and
+	       	tilaus.tilausnro=tilausrivi.tilausnro and
+		tilausrivi.tuotenro=tuote.tuotenro;
+
+-- tai hieman eriasian ilmaiseva ( mik‰ ero?) :
+
+CREATE 	VIEW AS_TILAUKSET2(asiakas, tuote, kpl) AS
+	SELECT asnimi, tuotenimi, sum(kpl)
+	FROM asiakas, tilaus, tilausrivi, tuote
+	WHERE asiakas.astunnus = tilaus.astunnus and
+	       	tilaus.tilausnro=tilausrivi.tilausnro and
+		tilausrivi.tuotenro=tuote.tuotenro
+	GROUP BY asnimi, tuotenimi;
+
+-- j‰lkimm‰isess‰ summataan asiakkaan eri tilauksilla olevat saman tuotteen kappalem‰‰r‰t
+
+
+/* Nk_2:  Hae edellisess‰ teht‰v‰ss‰ tekem‰ll‰si n‰kym‰ll‰ 
+	MasiYards'n tilaamat tuotteet */
+
+SELECT * FROM AS_TILAUKSET2
+	WHERE asiakas = 'MasiYards';
+
+
+/* Nk_3: Tee n‰kym‰ tuotot2011, jossa n‰kyy tuotten 
+nimi, tilattujen tuoteiden tulot ja kustannukset sek‰ 
+kunkin tuotteen tuotto (tulot - kustannukset). 
+Ota mukaan vain vuoden 2011 tilaukset.*/
+
+CREATE 	VIEW TUOTOT2011 
+		(tuote,tulot, kustannusket, tuotot) AS
+	SELECT tuotenimi, sum(kpl*hinta), sum(kpl*kustannus), 
+		sum(kpl*(hinta-kustannus)) 
+	FROM tuote, tilausrivi, tilaus
+	WHERE tilaus.tilausnro=tilausrivi.tilausnro and
+		tilausrivi.tuotenro=tuote.tuotenro and
+		YEAR(tilaus.tilauspvm) = 2011
+	GROUP BY tuotenimi;
+
+/* Nk_4: Hae edellisen n‰kym‰n avulla tuoteet, joiden tulot ovat
+alle 5000Ä */
+
+SELECT tuote 
+FROM TUOTOT2011
+WHERE tulot < 5000;
+
+/* Nk_5: Tee n‰kym‰ tilaus_posteittain, josta n‰et 
+postitoimipaikoittain tilausten m‰‰r‰t rahassa. 
+Miten saat esitetty‰ tiedot aakkosj‰rjestyksess‰?*/
+
+CREATE VIEW tilaus_posteittain 
+(postitoimipaikka, yht_hinta) AS
+	SELECT postitmp, sum(kpl*hinta)
+	FROM asiakas, tilaus, tilausrivi, tuote
+	WHERE asiakas.astunnus = tilaus.astunnus and
+	       	tilaus.tilausnro=tilausrivi.tilausnro and
+		tilausrivi.tuotenro=tuote.tuotenro 
+	 GROUP BY postitmp;
+
+select * from tilaus_posteittain
+order by postitoimipaikka;
+
+
+/* Nk_6: Poista teht‰v‰ss‰ 5 tekem‰si n‰kym‰. */
+
+DROP VIEW tilaus_posteittain;
+
+
+
+/* Nk_7: Tee n‰kym‰ toimittamattomat, josta n‰kyy 
+toimittamattomien tilausten tiedot. N‰yt‰ asiakkaan nimi, 
+tilausnumero, tuotteen nimi ja nro, tilattu m‰‰r‰. 
+HUOM: Tutustu tilausprosessiin (Demox-kannan kuvaus), t‰ss‰ on
+tiedett‰v‰, miten prosessi etenee.*/
+
+CREATE VIEW toimittamattomat AS
+	SELECT asnimi, tilaus.tilausnro, tuotenimi, 
+				tuote.tuotenro, kpl
+	FROM asiakas, tilaus, tilausrivi, tuote
+	WHERE asiakas.astunnus = tilaus.astunnus and
+	       	tilaus.tilausnro=tilausrivi.tilausnro and
+		tilausrivi.tuotenro=tuote.tuotenro and
+		tila IS NULL;
+
+select * from toimittamattomat;
+
+
+/* Nk_8: Tee n‰kym‰, joka ker‰‰ tuotot tuoteryhmitt‰in. Hae tuoteryhmien
+tiedot n‰kym‰n avulla.  */
+
+CREATE VIEW tr_tuotto (trnro, trtuotto) AS
+	SELECT trnro, sum(kpl*(hinta-kustannus))
+	FROM tilausrivi, tuote
+	WHERE tilausrivi.tuotenro=tuote.tuotenro
+	GROUP BY trnro;
+
+select * from tr_tuotto;
+
+--  LISƒTEHTƒVƒT:
+-- =============
+
+/* Nk_ 8: Keksi aiheeseen liittyen 2 todellisen tuntuista teht‰v‰‰ ja 
+tee niit‰ vastaavat sql-lauseet. */
+
+
+/* Nk_9: Etsi netist‰ asiaan liittyv‰ hyv‰ ohje tai esimerkki. Laita linkki sinne. */

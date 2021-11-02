@@ -1,0 +1,75 @@
+/* Harjoituksia Ulkoliitokseen */
+
+/* HUOM! Mieti jokaisessa tehtävässä ensin tarvitaanko ulkoliitos vai 
+tavallinen liitos! */
+ 
+/* ULi_1: Ketkä asiakkaat ovat tehneet tilauksen? Asiakkaan nimi vain kerran.  */
+
+SELECT DISTINCT asnimi
+FROM asiakas, tilaus
+WHERE asiakas.astunnus = tilaus.astunnus
+
+/* ULi_2: Ketkä asiakkaat eivät ole tehneet tilausta? */
+
+Tele Oy
+
+/* ULi_3: Mitä tuotteita on tilattu. Tuotteen nimi vain kerran. */
+
+SELECT DISTINCT tuotenimi, tilausrivi.tuotenro
+FROM tuote LEFT OUTER JOIN tilausrivi
+	ON tuote.tuotenro = tilausrivi.tuotenro
+
+Kuksa
+Lompakko
+Puukko
+Silkkihuivi
+Silkkisolmio
+
+/* ULi_4: Mitä tuotteita ei ole tilattu. */
+
+SELECT DISTINCT tuotenimi, tilausrivi.tuotenro
+FROM tuote LEFT OUTER JOIN tilausrivi
+	ON tuote.tuotenro = tilausrivi.tuotenro
+
+Kukkaro
+Paperiveitsi
+
+/* ULi_5: Hae kaikki tuotteet ja paljonko niitä on tilattu. Ota mukaan myös ne
+tuotteet, joita ei ole tilattu. */ 
+
+SELECT DISTINCT tuotenimi, tilausrivi.tuotenro, SUM(kpl)
+FROM tuote LEFT OUTER JOIN tilausrivi
+	ON tuote.tuotenro = tilausrivi.tuotenro
+GROUP BY tuotenimi
+
+
+/* ULi_6: Hae kaikki asiakkaat sekä heidän tilasnumerot ja niiden päivämäärät. Mukaan 
+myös ne asiakkaa, joilla ei ole tilauksia. */
+
+SELECT asnimi, tilausnro, tilauspvm
+FROM asiakas LEFT OUTER JOIN tilaus
+	ON asiakas.astunnus = tilaus.astunnus
+
+ 
+/* ULi_7: Hae kaikki tuotteet, sekä asiakkaiden nimet, jotka ovat tilanneet niitä.
+Mukaan myös ne tuotteet, joita ei ole tilattu. */
+
+SELECT tuotenimi, tilausrivi.tuotenro, SUM(kpl), asnimi
+FROM tuote LEFT OUTER JOIN tilausrivi
+	ON tuote.tuotenro = tilausrivi.tuotenro,
+asiakas INNER JOIN tilaus
+	ON asiakas.astunnus = tilaus.astunnus
+GROUP BY tuotenimi, asnimi
+ 
+ 
+ 
+-- LISÄTEHTÄVÄT:
+-- =============
+ 
+/* ULi_ 4: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja
+tee niitä vastaavat sql-lauseet. */
+ 
+ 
+/* ULi_5: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */
+ 
+ 

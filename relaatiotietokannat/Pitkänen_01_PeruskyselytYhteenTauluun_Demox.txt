@@ -1,0 +1,163 @@
+/* Peruskyselyjä yhteen tauluun: */
+
+
+
+/* Pk_1: Hae tuote-taulusta kaikki tuotteet; 
+	kaikki sarakkeet. */
+
+SELECT *
+FROM tuote
+
+/* Pk_2: Hae tuoteryhma-taulusta kaikki tuoteryhmät. */
+
+SELECT *
+FROM tuoteryhma
+
+/* Pk_3: Hae asiakkaiden nimet, yhteyshenkilöt ja 
+postitoimipaikat. Lajittele postitoimipaikoittain. */
+
+SELECT asnimi, yhteyshlo, postitmp
+FROM asiakas
+ORDER BY postitmp
+
+/* Pk_4: Mistä eri postitoimipaikoista yrityksen 
+asiakkaat ovat? Näytä kukin postitoimipaikka vain kerran*/
+
+SELECT DISTINCT postitmp
+FROM asiakas
+
+/* Pk_5: Hae oululaisten asiakkaiden nimet. */
+
+SELECT asnimi
+FROM asiakas
+WHERE postitmp = "oulu"
+
+/* Pk_6: Hae tuoteryhmän 11 tuotteet, joiden hinta 
+on alle 17 €.*/
+
+SELECT *
+FROM tuote
+WHERE hinta < 17 AND trnro = 11
+
+/* Pk_7: Hae tilaus-taulusta niiden tilausten tiedot, jotka on 
+tilattu verkosta (V) ja niiden, joiden tila on T=toimitettu. */
+
+SELECT *
+FROM tilaus
+WHERE tapa = "V" and tila = "T"
+
+/* Pk_8: Hae ne asiakkaat, joiden postitoimipaikka alkaa 
+T-kirjaimella. */
+
+SELECT *
+FROM asiakas
+WHERE postitmp LIKE "T%"
+
+/* Pk_9: Hae tuotteet, joiden nimessä ei esiinyy 
+merkkijono uk. */
+
+SELECT *
+FROM tuote
+WHERE tuotenimi NOT LIKE "%uk%"
+
+/* Pk_10: Hae tuotteet, joiden hinta on välillä 25-30 €. */
+
+SELECT *
+FROM tuote
+WHERE hinta NOT BETWEEN 25 AND 30
+
+/* Pk_11: Hae tuotteet, joiden kustannukset ovat 
+6, 7.4 tai 12.3€ */ 
+
+SELECT *
+FROM tuote
+WHERE kustannus IN (6, 7.4, 12.3)
+
+/* Pk_12: Hae asiakkaat, joille ei ole ilmoitettu 
+yhteyshenkilöä. */
+
+SELECT *
+FROM tuote
+WHERE kustannus IN (6, 7.4, 12.3)
+
+/* Pk_13: Hae niiden tuotteiden nimet, joiden hinta on
+yli 16 €. Näytä tulos aakkosjärjestyksessä. */
+
+SELECT tuotenimi
+FROM tuote
+WHERE hinta > 16
+ORDER BY tuotenimi
+
+/* Pk_14: Hae oululaiset asiakkaat, jotka ovat tulleet 
+asiakkaaksi 2010-luvulla. */
+
+SELECT *
+FROM asiakas
+WHERE postitmp = "oulu" AND asvuosi = 2010
+
+/* Pk_15: Hae kaikki sarakkeet tilaus-taulusta 
+01.09.2011 jälkeen lomakkeella tehdyistä tilauksista, 
+joita ei toimitettu.  */
+
+SELECT *
+FROM tilaus
+WHERE tilauspvm > 2011-09-01 AND tila = "M"
+
+/* Pk_16: Hae ei oululaiset asiakkaat, 
+jotka ovat tulleet asiakkaaksi vuoden 2008 jälkeen.  */
+
+SELECT *
+FROM asiakas
+WHERE NOT postitmp = "oulu" and asvuosi > 2008
+
+/* Pk_17: Hae tuotteet joiden hinta on yli 25 € ja 
+kustannukset alle 15 €. */
+
+SELECT *
+FROM tuote
+WHERE hinta > 25 AND kustannus < 15
+
+/* Pk_18: Hae ne helsinkiläiset ja oululaiset asiakkaat,
+joitka ovat tulleet asiakkaaksi ennen vuotta 2008 tai 
+vuoden 2010 jälkeen.*/
+
+SELECT *
+FROM asiakas
+WHERE postitmp = ("Helsinki" OR "Oulu") AND (asvuosi < 2008 OR asvuosi > 2010)
+
+/* Pk_19: Hae asiakkaat, joiden yhteyshenkilön nimi 
+alkaa o-kirjaimella. */
+
+SELECT *
+FROM asiakas
+WHERE yhteyshlo like "o%"
+
+/* Pk_20: Hae tuotteet, joiden nimen toinen kirjain 
+Ei ole u. */
+
+SELECT *
+FROM tuote
+WHERE tuotenimi not LIKE "_u%"
+
+/* Pk_21: Hae ne asiakkaat, jotka ovat tulleet asiakkaiksi 
+ vuonna 2006, 2008 tai 2010. */
+
+SELECT *
+FROM asiakas
+WHERE asvuosi IN (2006, 2008, 2010)
+
+/* Pk_22: Hae tilaukset, joita  ei ole toimitettu.
+Huom! Tutki toimitusketjun vaiheet tietokannan kuvauksista. */
+
+SELECT *
+FROM tilaus
+WHERE tila = "M" OR "L"
+
+-- LISÄTEHTÄVÄT:
+-- =============
+
+/* Pk_ 23: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Pk_24: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */

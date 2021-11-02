@@ -1,0 +1,148 @@
+
+/* Harjoituksia alikyselyistä */
+
+
+
+-- YKSINKERTAISIA ALIKYSELYITÄ: 
+
+/* Ak_1: Hae ne tuotteet nimellä, joilla on sama hinta
+kuin tuotteella 7. Käytä alikyselyä */
+
+select tuotenimi
+from tuote
+where hinta = 
+	(select hinta
+	FROM tuote
+	where tuotenro = 7)
+
+
+/* Ak_2: Hae tilauksen 101 tuotteiden nimet. */
+
+select tuotenimi
+from tuote
+where tuotenro IN 
+	(select tuotenro
+	FROM tilausrivi
+	where tilausnro = 101)
+
+/* Ak_3: Ketkä asiakkaat ovat tilanneet 
+tuoteryhmän 13 tuotteita? */
+
+select asnimi
+from asiakas
+where astunnus IN 
+	(select astunnus
+	FROM tilaus
+	where tilausnro IN
+     	(SELECT tilausnro
+         from tilausrivi
+         	WHERE tuotenro IN
+         		(SELECT tuotenro
+                 FROM tuote
+                 WHERE trnro = 13)))
+
+/* tee sama asia liitosta käyttäen */
+
+SELECT DISTINCT asnimi
+FROM uusi_tuoteryhma, uusi_tuote, uusi_tilaus, uusi_tilausrivi, uusi_asiakas
+WHERE uusi_tuoteryhma.trnro = "13"
+AND uusi_tuoteryhma.trnro = uusi_tuote.trnro
+AND uusi_tilaus.tilausnro = uusi_tilausrivi.tilausnro
+AND uusi_tilaus.astunnus = uusi_asiakas.astunnus
+AND uusi_tilausrivi.tuotenro = uusi_tuote.tuotenro
+
+
+/* Ak_4: Anna niiden tuoteryhmien nimet, joiden tuotteista
+ainakin yhtä tilattu yksittäisellä tilausrivillä yli 100 kpl. */
+
+select trnimi
+from tuoteryhma
+where trnro IN 
+	(select trnro
+	FROM tuote
+	where tuotenro IN
+     	(SELECT tuotenro
+         from tilausrivi
+         	WHERE kpl > 100))
+
+/* tee sama asia liitosta käyttäen */
+
+SELECT DISTINCT trnimi
+from tuoteryhma, tuote, tilausrivi
+WHERE kpl > 100
+	AND tuoteryhma.trnro = tuote.trnro
+    AND tuote.tuotenro = tilausrivi.tuotenr
+	
+
+/* Ak_5: Mitkä tuotteet ovat halvempia kuin kaikki
+tuoteryhmän 12 tuotteet */
+
+select tuotenimi
+FROM tuote
+where hinta IN 
+     	(SELECT DISTINCT hinta
+         from tuote
+         	WHERE trnro = 12)
+
+
+/* Ak_6: Hae kustakin TUOTE-taulun tuotteesta tunnus, nimi, tilausten 
+kappalemäärä ja tuotot yhteensä. Tuotto yhteensä saadaan 
+kertomalla hinnan ja kustannusten erotus tilattulla 
+kappalemäärällä. HUOM! Tätä tehtävää ei voi tehdä alikyselynä vaan 
+liitoksena.  Mieti miksi ei. */
+
+select tuote.tuotenro, tuotenimi, Sum(kpl) AS "tilattu yhteensä", ((hinta - kustannus) * kpl) AS "Tuotto"
+FROM tuote, tilausrivi
+WHERE tuote.tuotenro = tilausrivi.tuotenro
+GROUP BY tuotenimi
+
+
+-- KYTKETTYJÄ ALIKYSELYITÄ: 
+
+/* Ak_7: Hae tuotteet, joiden hinta on korkeampi 
+tai yhtä suuri kuin tuoteryhmänsä keskiarvo. */
+
+
+
+
+/* Ak_8: Hae tuotteet, joiden kustannukset ovat 
+tuoteryhmänsä pienimmät. */
+
+ 
+
+/* Ak_9: Hae postitoimipaikoittain asiakkuusiältään 
+vanhimmat asiakkaat. */
+
+
+
+
+/* Ak_10: Hae tilauksen 209 tuotteiden nimet käyttäen
+EXISTS-alikyselyä. */ 
+
+
+
+
+/* Ak_11: Mitkä asiakkaat ovat tulleet asiakkaiksi 
+eri vuonna kuin kaikki turkulaiset ja tamperelaiset, 
+käytä NOT EXISTS-alikyselyä. */ 
+
+
+
+
+/* Ak_12: Hae asiakkaat, jotka ovat tehneet 
+alle 600 Euron hintaisia tilauksia. HUOM! Tässä tarvitset 
+alikyselyn lisäksi myös liitosta. Tai voi tehdä kokonaan
+ liitoksena. */
+
+
+
+
+
+-- LISÄTEHTÄVÄT:
+-- =============
+
+/* Ak_ 13: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Ak_14: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */	

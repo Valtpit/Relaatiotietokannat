@@ -1,0 +1,65 @@
+/* Harjoituksia UNION operaattorin käytöstä */ 
+
+
+/* Un_1: Hae asiakkaan tunnus, nimi, ja yhteyshenkilö.
+Jos yhteyshenkilö puuttuu, korvaa se tekstillä
+"<ei ilmoitettu>". */
+select astunnus, asnimi, yhteyshlo from asiakas
+where yhteyshlo is not null
+union
+select astunnus, asnimi, '<ei ilmoitettu>' from asiakas
+where yhteyshlo is null 
+order by 2;
+ 
+ 
+/* Un_2: Hae asiakkaan nimi, tilausnumero,
+tilauspäivä ja tilaustapa. Jos tilaustapa on V,
+laita tulokseen teksti VERKKO. Jos tilaustapa on L,
+laita LOMAKE. Toteuta UNIONilla. */
+select asnimi, tilausnro, tilauspvm, 'Verkko' 
+from asiakas as a inner join tilaus as t
+on a.astunnus = t.astunnus
+where tapa = 'V'
+union
+select asnimi, tilausnro, tilauspvm, 'Lomake' 
+from asiakas as a inner join tilaus as t
+on a.astunnus = t.astunnus
+where tapa = 'L'
+order by 1;
+
+ /* Un_3: Hae kaikki tuotteet (tunnus, nimi,
+tilatut kappaleet yhteensä). Mikäli tuotetta ei ole tilattu
+tilatut kappaleet yhteensä on nolla.
+ */
+select t.tuotenro, tuotenimi, sum(kpl) as yhteensä
+from tuote as t inner join tilausrivi as r
+on t.tuotenro = r.tuotenro
+group by t.tuotenro, tuotenimi  
+union
+select t.tuotenro, tuotenimi, 0
+from tuote as t left join tilausrivi as r
+on t.tuotenro = r.tuotenro
+where r.tuotenro is null;
+ 
+/* Un_4: Laske asiakkaiden tilausten lukumäärä. Mikäli asiakkaalla ei ole 
+tilauksia on lukumäärä nolla. */
+Select asnimi, count(*) as tillkm
+from asiakas as a inner join tilaus as t
+on a.astunnus = t.astunnus
+group by asnimi
+union
+select asnimi, 0 
+from asiakas as a left join tilaus as t
+on a.astunnus = t.astunnus
+where t.astunnus is null;
+
+
+ 
+-- LISÄTEHTÄVÄT:
+-- =============
+ 
+/* Un_ 6: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja
+tee niitä vastaavat sql-lauseet. */
+ 
+ 
+/* Un_7: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */ 

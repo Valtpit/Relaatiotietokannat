@@ -1,0 +1,164 @@
+
+/* Tässä tehtäväsarjassa viedään tietosisältöä vanhoista tauluista uusiin 
+   tauluihin. YLLÄPITOLAUSEET ajetaan siis uusiin tauluihin */
+
+-- MUISTA MIETTIÄ LOOGINEN RATKAISU ENNE SQL_LAUSEEN KIRJOITTAMISTA!!!!!
+
+/* Yp_1: DOKUMENTOI seuraavissa tehtävissä tehtävä tietojen siirto. 
+	Missä järjestyksessä veit tiedot? Saitko mahdollisia 
+	virheilmoituksia? kopioi ne. Mitä virheilmoitus merkitsi? 
+	Miten pääsit siitä eteenpäin?*/
+
+
+/* Yp_2: Vie UUSI_ASIAKAS, UUSI_TILAUS, UUSI_TILAUSRIVI, UUSI_TUOTE, UUSI_TUOTERYHMA ja POSTI-tauluihisi 
+      	tiedot vanhoista tauluista. Tee siis useampi sql-lause. 
+
+	HUOM! Jos olet määritellyt tauluihin viiteavainmääritykset, 
+	tietot pitää viedä tauluihin niin, että lapsitauluun tietoja vietäessä
+	isätaulussa on jo se rivi, mihin lapsitaulusta viitataan.
+
+	Huomaa, että omissa tauluissasi on myös sarakkeita, joita ei ole yhteisissä tauluissa.
+	Vie niihin sopivat tiedot vanhoista tauluista. */
+
+
+/* Viedään ensin posti-tauluun käytössä olevat postinumerot ja -nimet */
+	
+INSERT INTO posti
+	SELECT DISTINCT postinro, postitmp
+	FROM asiakas
+	WHERE postinro IS NOT NULL;
+
+/* asiakastiedot voidaan viedä, kun posti-taulussa on postinumerot */
+
+	INSERT INTO UUSI_asiakas
+	SELECT astunnus, asnimi, yhteyshlo, postinro, asvuosi
+	FROM asiakas;
+
+/* tuoteryhmä- tauluun ei vitata mistään, siihen voidaan viedä tietoja 
+myös ennen asiakas- ja postitauluja*/
+	INSERT INTO UUSI_tuoteryhma
+	SELECT * 
+	FROM tuoteryhma;
+
+/* tuote- tauluun pitää viedä vanhan taulun sarakkeet*/
+
+	INSERT INTO UUSI_tuote
+	SELECT *  
+	FROM tuote;
+	
+
+/* tilaus-tauluun voidaan viedä rivi, kun asiakkaat ja tuotteet ovat 
+kannassa HUOM! tauluun viedään myös kuluva päivämäärä*/
+
+INSERT INTO UUSI_tilaus
+	SELECT tilausnro,astunnus,tilauspvm,tapa, tila, getdate() 
+	FROM tilaus; -- SQL Server
+
+INSERT INTO UUSI_tilaus
+	SELECT tilausnro,astunnus,tilauspvm,tapa, tila, current_date 
+	FROM tilaus;  -- My SQL
+
+/* tilausrivi-tauluun voidaan viedä tiedot, kun tilausten ja tuotteiden 
+tiedot on viety */
+
+INSERT INTO UUSI_tilausrivi
+	SELECT * 
+	FROM tilausrivi;
+
+
+/* Yp_3: Lisää Posti-tauluun rivit 15500, Lahti ja 00200, Helsinki. */
+
+	INSERT INTO posti
+	VALUES ('15500', 'Lahti'), ('00200', 'Helsinki');
+-- HUOM! postinumero on oltava hipsuissa. Oliko sinulla?
+
+
+/* Yp_4: Lisää omaan Asiakas-tauluusi uusi asiakas AROLA Arola Oy, 
+jonka postinumero on 15500 ja asiakkaaksitulovuosi on kuluva vuosi. 
+Tarkista menikö rivi tauluun.*/
+
+INSERT INTO UUSI_asiakas
+	VALUES ('AROLA', 'Aroola Oy', NULL, '15500',
+		 YEAR(getdate())); -- SQL Server
+
+INSERT INTO UUSI_asiakas
+	VALUES ('AROLA', 'Aroola Oy', NULL, '15500',
+		 YEAR(current_date)); -- My SQL
+
+/* Huom!!  Tämä lause ei vie NULL-tekstiä yhteyshenkilöön vaan ilmoittaa, 
+että arvo puuttuu. Jos laitoit 'NULL' niin yhteyshenkilösi nimi on NULL.*/
+
+
+/* Yp_5: Lisää edellisessä tehtävässä tallentamallesi uudelle asiakkaalle 
+yhteyshenkilö. Hänen nimensä on Kortes. */
+
+UPDATE  UUSI_asiakas
+	SET yhteyshlo = 'Kortes'
+	WHERE astunnus = 'AROLA';
+
+
+/* Yp_6: Poista tilauksen 209 kolmas rivi. */
+
+DELETE FROM UUSI_tilausrivi
+WHERE tilausnro = 209 AND rivinro = 3;
+
+
+/* Yp_7: Lisää uusi tuote Hikinauha, laita tuotenumeroksi 8.  
+- Taulumäärityksistäsi riippuu pitääkö sinun määritellä myös mihin 
+tuoteryhmään tuote kuuluu. */
+
+
+INSERT INTO UUSI_tuote (tuotenro,tuotenimi,trnro)
+VALUES (8, 'Hikinauha', 11);
+
+/* YP_8: Lisää edellä lisäämällesi tuotteelle hinnaksi 10 € ja 
+kustannuksiksi 4 €. */
+
+UPDATE UUSI_tuote
+	SET hinta = 10,
+	kustannus = 4
+	WHERE tuotenro=8;
+
+
+/* Yp_9: Lisää uusi tuoteryhmä: 15, Kalastus */
+
+	INSERT INTO UUSI_tuoteryhma
+	VALUES ( 15, 'Kalastus');
+
+/* Yp_10: Lisää edellä lisättyyn tuoteryhmään kuuluvat tuotteet:  
+	Siikaperho, hinta 9€ ja  Ahvenpilkki, hinta 12 €. */
+
+	INSERT INTO UUSI_tuote (tuotenro,tuotenimi,hinta,trnro)
+	VALUES ( 9, 'Siikaperho', 9, 15),
+           (10, 'Ahvenpilkki', 12, 15);
+
+
+/* Yp_11: Arola tilaa 100 kpl Ahvenpilkkeja ja 150 kpl Siikaperhoja. 
+	Päivitä tietokantaasi tiedot tästä tilauksesta. */
+
+INSERT INTO UUSI_tilaus (tilausnro,astunnus,tilauspvm,tapa)
+VALUES (210, 'AROLA', getdate(), 'L');  -- SQL Server
+
+INSERT INTO UUSI_tilaus (tilausnro,astunnus,tilauspvm,tapa)
+VALUES (210, 'AROLA', current_date, 'L'); -- My SQL
+
+INSERT INTO UUSI_tilausrivi (tilausnro,rivinro,tuotenro,kpl)
+VALUES ( 210, 1, 10, 100), ( 210, 2, 9, 150);  -- Tämä lause käy molempiin tiedonhallintajärjestelmiin
+
+
+/* Yp_12: Korota kaikkien tuoteryhmän 12 tuotteiden hintoja 5%. */
+
+UPDATE 	UUSI_tuote
+	SET hinta = 1.05*hinta
+	WHERE trnro = 12;
+
+
+-- LISÄTEHTÄVÄT:
+-- =============
+
+/* Yp_ 13: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Yp_14: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */
+

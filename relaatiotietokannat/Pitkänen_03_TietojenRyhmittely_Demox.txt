@@ -1,0 +1,65 @@
+
+/* Tietojen ryhmittely select-lauseessa */
+
+
+/* Tr_1: Esitä tuoteryhmittäin: tuoteryhmän tuotteiden 
+hinnat yhteensä, tuotteiden keskihinta sekä tuotteiden 
+kustannukset. */
+
+SELECT trnro, SUM(hinta), AVG(hinta), SUM(kustannus)
+from tuote
+GROUP BY trnro
+
+/* Tr_2: Montako tuotetta kuhunkin tuoteryhmään 
+kuuluu? */
+
+SELECT trnro, COUNT(trnro)
+from tuote
+GROUP BY trnro
+
+/* Tr_3: Minä vuonna asiakkaaksi on tullut 
+vähintään 2 asiakasta? */
+
+SELECT asvuosi, COUNT(asvuosi)
+from asiakas
+GROUP BY asvuosi
+HAVING COUNT(asvuosi) >= 2
+
+/* Tr_4: Listaa tilaukset, joissa on vähintään 
+3 tilausriviä. */
+
+SELECT tilausnro
+from tilausrivi
+GROUP BY tilausnro
+HAVING COUNT(rivinro) >= 3
+
+/* Tr_5: Laske montako tilausta kukin asiakas on tehnyt. 
+Näytä asiakkaan tunnus ja tilausten määrä. */
+
+SELECT astunnus, COUNT(tilausnro)
+from tilaus
+GROUP BY astunnus
+
+/* Tr_6: Missä postitoimipaikassa on vähintään 2 asiakasta? */
+
+SELECT postitmp
+from asiakas
+GROUP BY postitmp
+HAVING COUNT(postitmp) >= 2
+
+/* Tr_7: Paljonko eri tuotteita on tilattu. 
+Tulosta tuotenumeron mukaan nousevaan järjestykseen. */
+
+SELECT tuotenro, SUM(kpl)
+from tilausrivi
+GROUP BY tuotenro
+
+LISÄTEHTÄVÄT:
+=============
+
+/* Tr_ 8: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Tr_9: Etsi netistä asiaan liittyvä hyvä ohje 
+tai esimerkki. Laita linkki sinne. */

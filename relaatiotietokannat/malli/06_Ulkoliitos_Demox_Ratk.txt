@@ -1,0 +1,79 @@
+/* Harjoituksia Ulkoliitokseen */
+
+/* HUOM! Mieti jokaisessa tehtävässä ensin tarvitaanko ulkoliitos vai 
+tavallinen liitos! */
+ 
+/* ULi_1: Ketkä asiakkaat ovat tehneet tilauksen? Asiakkaan nimi vain kerran.  */
+
+select distinct asnimi -- tavallinen liitos
+from asiakas as a inner join tilaus as t
+on a.astunnus = t.astunnus;  
+
+select distinct asnimi  
+from asiakas, tilaus
+where asiakas.astunnus = tilaus.astunnus;
+
+/* ULi_2: Ketkä asiakkaat eivät ole tehneet tilausta? */
+
+select asnimi				-- ulkoliitos
+from asiakas as a left outer join tilaus as t
+on a.astunnus = t.astunnus  
+where t.astunnus is null;
+
+/* ULi_3: Mitä tuotteita on tilattu. Tuotteen nimi vain kerran. */
+
+select distinct tuotenimi			-- tavallinen liitos
+from tuote as t inner join tilausrivi as r
+on t.tuotenro = r.tuotenro;
+
+select distinct tuotenimi
+from tuote, tilausrivi
+where tuote.tuotenro = tilausrivi.tuotenro;
+
+/* ULi_4: Mitä tuotteita ei ole tilattu. */
+
+select tuotenimi   -- ulkoliitos
+from tuote as t left join tilausrivi as r
+on t.tuotenro = r.tuotenro
+where r.tuotenro is null;
+
+/* ULi_5: Hae kaikki tuotteet ja paljonko niitä on tilattu. Ota mukaan myös ne
+tuotteet, joita ei ole tilattu. */ 
+
+select t.tuotenro, tuotenimi, sum(kpl) as yhteensä  -- ulkoliitos
+from tuote as t left join tilausrivi as r
+on t.tuotenro = r.tuotenro
+group by t.tuotenro, tuotenimi; 
+
+
+/* ULi_6: Hae kaikki asiakkaat sekä heidän tilasnumerot ja niiden päivämäärät. Mukaan 
+myös ne asiakkaa, joilla ei ole tilauksia. */
+
+select asnimi, t.tilausnro, tilauspvm   -- ulkoliitos
+from asiakas as a left join tilaus as t 
+on a.astunnus = t.astunnus; 
+
+ 
+/* ULi_7: Hae kaikki tuotteet, sekä asiakkaiden nimet, jotka ovat tilanneet niitä.
+Mukaan myös ne tuotteet, joita ei ole tilattu. */
+
+select tuotenimi, asnimi  -- ulkoliitos
+from tuote as t left join tilausrivi as r
+on t.tuotenro = r.tuotenro
+left join tilaus as s
+on r.tilausnro = s.tilausnro
+left join asiakas as a
+on s.astunnus = a.astunnus; 
+ 
+ 
+ 
+-- LISÄTEHTÄVÄT:
+-- =============
+ 
+/* ULi_ 4: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja
+tee niitä vastaavat sql-lauseet. */
+ 
+ 
+/* ULi_5: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */
+ 
+ 

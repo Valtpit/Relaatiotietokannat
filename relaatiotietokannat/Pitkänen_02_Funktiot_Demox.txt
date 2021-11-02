@@ -1,0 +1,86 @@
+
+/* Funktioiden käyttö select lauseessa */
+
+
+
+/* Fu_1: Hae suurin ja pienin tuotteen hinta. */
+
+SELECT MAX(hinta), MIN(hinta)
+FROM tuote
+
+/* Fu_2: Montako tuotetta on tuote taulussa? */
+
+SELECT COUNT(tuotenro)
+FROM tuote
+
+/* Fu_3: Mikä on tuotteiden hintojen keskiarvo? 
+Esitä keskiarvo kahdella desimaalilla.*/
+
+SELECT round(AVG(hinta),2)
+FROM tuote
+
+/* Fu_4: Mikä on tilattujen tuotteiden 
+kappalemäärä yhteensä? */
+
+SELECT tuotenro, SUM(kpl)
+FROM tilausrivi
+group BY tuotenro
+
+/* Fu_5: Hae asiakas-taulusta asiakkaan nimen 
+3 ensimmäistä merkkiä. */
+
+SELECT LEFT(asnimi, 3)
+FROM asiakas
+
+/* Fu_6: Hae tilaus-taulusta tilausnumero, asiakastunnus, 
+tilauksen kuukausi ja tilauksen vuosi. */
+
+SELECT tilausnro, astunnus, MONTH(tilauspvm), YEAR(tilauspvm)
+FROM tilaus
+
+/* Fu_7: Milloin kauimmin asiakkaana ollut on 
+tullut asiakkaaksi? */
+
+SELECT asnimi, MIN(asvuosi)
+FROM asiakas
+
+/* Fu_8: Mikä on viimeisin tilausnumero? */
+
+SELECT tilausnro, MAX(tilauspvm)
+FROM tilaus
+
+/* Fu_9: Monestako eri postitoimipaikasta 
+asiakkaita on? */
+
+SELECT count(DISTINCT(postitmp))
+FROM asiakas
+
+/* Fu_10: Minä eri kuukausina tilauksia on tehty? */
+
+SELECT count(DISTINCT(MONTH(tilauspvm)))
+FROM tilaus
+
+/* Fu_11: Hae tuotteiden nimet, hinnat ja 
+kustannukset. Pyöristä hinnat ja kustannukset alaspäin.
+Esitä kustannukset täysinä euroina. Jos hinta tai 
+kustannus puuttuu, laita listaan arvoksi 0 €.*/
+
+SELECT tuotenimi, /*hinta, COALESCE(kustannus, 0),*/ FLOOR(hinta), COALESCE(FLOOR(kustannus), 0)
+FROM tuote
+GROUP BY tuotenimi
+
+/* Fu_12: Hae tuotteen nimi ja hinta. 
+Esitä hinta yhden desimaalin tarkkuudella.*/
+
+SELECT tuotenimi, ROUND(hinta, 1)
+FROM tuote
+GROUP BY tuotenimi
+
+LISÄTEHTÄVÄT:
+=============
+
+/* Fu_ 13: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Fu_14: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */

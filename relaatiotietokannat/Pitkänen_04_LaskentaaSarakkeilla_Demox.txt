@@ -1,0 +1,59 @@
+
+/* Laskentaa sarakkeilla yhden taulun SELECT-lauseissa */
+
+
+/* Ls_1: Kuinka monta vuotta kukin asiakas on ollut 
+asiakkaana? Näytä asiakkaan nimi ja asiakkuuden kesto.
+Lajittele  asiakkuuden keston mukaan laskevaan järjestykseen. */
+
+SELECT astunnus, YEAR(CURRENT_DATE) - asvuosi as "kesto"
+FROM asiakas
+GROUP BY astunnus
+ORDER BY kesto DESC
+
+/* Ls_2: Mikä on tuotteiden minimi- ja maksimihinnan 
+erotus ja montako prosenttia maksimihinta on suurempi
+kuin minimihinta? */
+
+SELECT MAX(hinta) - MIN(hinta), ROUND(MIN(hinta) / MAX(hinta), 2)
+FROM tuote
+
+/* Ls_3: Paljonko tuotteiden katteet ovat? Tuotteen kate on 
+hinta vähennettynä kustannuksilla.Jos tuotteen 
+kustannuksia ei ole ilmoitettu, käytä laskennassa 
+kustannusta, joka on puolet tuotteen hinnasta. */
+
+SELECT tuotenimi, hinta - COALESCE(kustannus, hinta/2) AS kate
+FROM tuote
+GROUP BY tuotenimi
+
+/* Ls_4: Hae nimet ja NYKYISET hinnat niistä tuotteista, 
+joiden hinta 15% korotettuna olisi yli 30 €. */
+
+SELECT tuotenimi, hinta
+FROM tuote
+WHERE hinta * 1.15 > 30
+GROUP BY tuotenimi
+
+/*  Ls_5: Hae asiakkaan tunnus, tilausnumero, 
+tilauspäivä, tilauksen tapa ja tilauksen tila. 
+Jos tapa on V, laita tulokseen teksti VERKKO. 
+Jos tapa on L,laita LOMAKE. 
+Toteuta CASE-rakenteella.  */
+
+SELECT astunnus, tilausnro, tilauspvm, tila,
+	CASE tapa
+	WHEN "V" THEN "verkko"
+	WHEN "L" THEN "lomake"
+	END AS "tilaustapa"
+from tilaus
+
+--LISÄTEHTÄVÄT:
+--=============
+
+/* Ls_ 6: Keksi aiheeseen liittyen 2 todellisen tuntuista tehtävää ja 
+tee niitä vastaavat sql-lauseet. */
+
+
+/* Ls_7: Etsi netistä asiaan liittyvä hyvä ohje tai 
+esimerkki. Laita linkki sinne. */

@@ -1,0 +1,35 @@
+
+
+/* Harjoituksia indekseistä */
+
+
+/* Ind_1: Millaisia indeksejä perustaisit Demox-opetuskantaan? Perustele vastauksesi?  */
+
+
+	-- esim. asiakkaan nimen mukaan unique index
+	-- tuotteiden nimen mukaan index
+	-- yleensä perusavaimen mukaan on jo indeksoitu tiedonhallintajärjestelmän toimesta, 
+		-- joten niitä ei tarvitse tehdä
+
+/* Ind_2: Luo yksi unique indeksi ja kaksi tavallista indeksiä. */
+
+	CREATE UNIQUE INDEX tuoteryhma_nimi ON tuoteryhma(trnimi);
+	CREATE INDEX tuote_nimi ON tuote(tuotenimi);
+	CREATE INDEX tilaus_asiakas ON tilaus(astunnus);
+
+
+
+/* Ind_3: Poista toinen äsken luomistasi tavallisista indekseistä. */
+
+	DROP INDEX tuote_nimi ON tuote;
+
+
+
+LISÄTEHTÄVÄT:
+=============
+
+
+
+/* Ind_4: Etsi netistä asiaan liittyvä hyvä ohje tai esimerkki. Laita linkki sinne. */
+
+ 
